@@ -1,0 +1,1203 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>工程商机雷达 V1.3（交接包基线原型）</title>
+<style>
+:root{--bg:#f4f6f9;--card:#fff;--ink:#1c2733;--mut:#64748b;--line:#e2e8f0;--acc:#0f62fe;--green:#067647;--amber:#b54708;--red:#b42318;--gray:#475467}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);font-size:14px}
+.simbar{background:#7a2e0e;color:#fff;text-align:center;padding:6px 10px;font-size:12.5px;position:sticky;top:0;z-index:60}
+.layout{display:flex;min-height:100vh}
+nav{width:208px;background:#0b2239;color:#dbe7f3;flex:none;padding:18px 0;position:sticky;top:33px;height:calc(100vh - 33px);overflow:auto}
+nav .logo{padding:0 18px 14px;font-size:17px;font-weight:700;color:#fff}
+nav .logo small{display:block;font-size:11px;color:#8fb3d9;font-weight:400;margin-top:3px}
+nav a{display:block;padding:10px 18px;color:#dbe7f3;text-decoration:none;cursor:pointer;border-left:3px solid transparent}
+nav a.on{background:#12365a;border-left-color:#4da3ff;color:#fff}
+nav .grp{padding:12px 18px 4px;font-size:11px;color:#7d9dbd}
+main{flex:1;padding:20px 26px;max-width:1180px;margin:0 auto;width:100%}
+h1{font-size:20px;margin:2px 0 4px}h2{font-size:16px;margin:22px 0 10px}h3{font-size:14.5px;margin:14px 0 8px}
+.sub{color:var(--mut);margin-bottom:14px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.kpi b{font-size:26px;display:block}
+.kpi span{color:var(--mut);font-size:12.5px}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th,td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:#f8fafc;color:var(--gray);font-weight:600;font-size:12.5px}
+tr:last-child td{border-bottom:none}
+.badge{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:600}
+.dA{background:#e6f4ea;color:var(--green)}.dB{background:#fef6e0;color:var(--amber)}.dC{background:#e8eefc;color:#175cd3}.dD{background:#fdecea;color:var(--red)}
+.ev{display:inline-block;padding:1px 7px;border-radius:4px;font-size:11.5px;font-weight:600;cursor:pointer}
+.eE{background:#e0ebff;color:#175cd3}.eI{background:#fef3c7;color:#92400e}.eA{background:#ffedd5;color:#9a3412}.eN{background:#f1f5f9;color:#64748b;border:1px dashed #94a3b8}
+.tag{display:inline-block;background:#eef2f7;color:var(--gray);border-radius:4px;padding:1px 7px;font-size:11.5px;margin-right:4px}
+.warn{background:#fff7ed;border:1px solid #fdba74;border-radius:10px;padding:12px 16px;margin:12px 0}
+.danger{background:#fef2f2;border:1px solid #fca5a5;border-radius:10px;padding:12px 16px;margin:12px 0}
+.info{background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:12px 16px;margin:12px 0}
+.btn{background:var(--acc);color:#fff;border:none;border-radius:8px;padding:8px 16px;cursor:pointer;font-size:13.5px}
+.btn.ghost{background:#fff;color:var(--acc);border:1px solid var(--acc)}
+.btn.small{padding:4px 10px;font-size:12.5px}
+.btn:disabled{background:#cbd5e1;cursor:not-allowed}
+.axis{display:flex;align-items:flex-start;gap:0;margin:14px 0;overflow-x:auto;padding-bottom:4px}
+.stg{flex:1;min-width:86px;text-align:center;position:relative;padding-top:16px;font-size:12px;color:var(--mut)}
+.stg:before{content:"";position:absolute;top:5px;left:50%;transform:translateX(-50%);width:11px;height:11px;border-radius:50%;background:#e2e8f0;border:2px solid #cbd5e1}
+.stg:after{content:"";position:absolute;top:10px;left:calc(-50% + 8px);width:calc(100% - 16px);height:2px;background:#e2e8f0}
+.stg:first-child:after{display:none}
+.stg.done{color:var(--ink)}.stg.done:before{background:#22c55e;border-color:#22c55e}
+.stg.cur{color:var(--acc);font-weight:700}.stg.cur:before{background:var(--acc);border-color:var(--acc);box-shadow:0 0 0 4px #dbeafe}
+.stg .sep{display:block;color:var(--red);font-size:11px}
+.bar{height:8px;background:#eef2f7;border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--acc)}
+.dimrow{display:grid;grid-template-columns:110px 1fr 130px 60px;gap:10px;align-items:center;padding:7px 0;border-bottom:1px dashed var(--line);cursor:pointer}
+.dimrow:hover{background:#f8fafc}
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;z-index:80}
+.modal.open{display:flex}
+.modal .box{background:#fff;border-radius:12px;max-width:640px;width:92%;max-height:84vh;overflow:auto;padding:20px 22px}
+input,select,textarea{padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13.5px;font-family:inherit}
+textarea{width:100%}
+.frow{margin:10px 0}.frow label{display:block;color:var(--gray);margin-bottom:4px;font-size:12.5px}
+.clickable{cursor:pointer}.clickable:hover{border-color:var(--acc)}
+.mut{color:var(--mut)} .small{font-size:12.5px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:860px){.grid2{grid-template-columns:1fr}nav{width:64px}nav a,nav .grp{font-size:0;padding:12px 0;text-align:center}nav .logo{font-size:0}nav a:before{content:attr(data-i);font-size:16px}}
+.rep{background:#fff;border:1px solid var(--line);padding:28px 34px;max-width:820px;margin:0 auto}
+.rep h1{font-size:19px;text-align:center}.rep .foot{border-top:1px solid var(--line);margin-top:18px;padding-top:8px;color:var(--mut);font-size:12px}
+@media print{nav,.simbar,.noprint{display:none}main{padding:0}}
+</style>
+</head>
+<body>
+<div class="simbar">原型 V1.3 · 按《研发总交接包 V1.0》统一基线 · 全部为<strong>模拟数据</strong> · 置信度与等级阈值为<strong>待批准模拟参数</strong>（w_i^dec 未定义、阈值未批准），不得视为生产规则</div>
+<div class="layout">
+<nav id="nav">
+  <div class="logo">工程商机雷达<small>交接包基线 · V1.3 原型</small></div>
+  <div class="grp">经营</div>
+  <a data-v="dash" data-i="◈" class="on">P01 经营驾驶舱</a>
+  <a data-v="radar" data-i="◎">P02 项目雷达</a>
+  <a data-v="track" data-i="▤">P08 商机跟踪</a>
+  <div class="grp">项目与研判</div>
+  <a data-v="evidence" data-i="▦">P06 证据与资料中心</a>
+  <a data-v="merge" data-i="⛓">项目识别与归并</a>
+  <div class="grp">支撑</div>
+  <a data-v="profile" data-i="◉">P07 企业画像</a>
+  <a data-v="reports" data-i="▨">P09 报告中心</a>
+  <a data-v="rules" data-i="§">P10 规则管理</a>
+  <a data-v="feedback" data-i="✎">人工反馈</a>
+</nav>
+<main id="main"></main>
+</div>
+<div class="modal" id="evModal"><div class="box">
+  <h3 id="evTitle">证据查看</h3><div id="evBody"></div>
+  <p class="small mut">证据标签：FACT 事实｜INFER 推断｜ASSUME 假设｜UNKNOWN 未知（0分、k=0、保留记录）。核验状态：VERIFIED / UNVERIFIED / IN_PROGRESS / VERIFIED_MISSING。此处为演示占位证据，正式版定位原文文件/页码/段落。</p>
+  <button class="btn" onclick="closeModal()">关闭</button>
+</div></div>
+
+<script>
+const DATA = {
+ "projects": [
+  {
+   "id": "DEMO-001",
+   "name": "城市老旧排水管网更新改造项目（DEMO-001·模拟）",
+   "short": "管网更新",
+   "stage": 2,
+   "stage_name": "S2 可行性研究",
+   "loc": "澜江市老城区（模拟）",
+   "owner": "UNKNOWN（业主主体待核·模拟缺口）",
+   "owner_ev": "UNKNOWN",
+   "amount": "总投资未披露（模拟缺口）",
+   "content": "老旧排水管网更新、泵站改造、排水节点整治（模拟）",
+   "funding": "UNKNOWN（资金来源未提供，不得自动生成）",
+   "events": [
+    {
+     "t": "2026-09-05",
+     "e": "项目建议书批复（模拟事件）",
+     "s": "S1→S2 前置"
+    },
+    {
+     "t": "2026-11-01",
+     "e": "可研报告编制中（模拟事件）",
+     "s": "S2 进行态"
+    }
+   ],
+   "gates": {
+    "G1": "未触发（无终止证据）",
+    "G2": "不适用/待核（按机会）",
+    "G3": "未触发（范围未锁定）",
+    "G4": "未触发（无重大风险证据）"
+   },
+   "veto": [],
+   "verify": [
+    {
+     "item": "业主主体到底是谁",
+     "impact": "影响决策",
+     "method": "查可研批复原文发文单位"
+    },
+    {
+     "item": "资金来源（财政/专项债/自筹）",
+     "impact": "影响决策",
+     "method": "查可研批复资金章节"
+    },
+    {
+     "item": "可研编制单位与设计范围划分",
+     "impact": "影响评分",
+     "method": "查可研评审公告"
+    }
+   ],
+   "chain": [
+    {
+     "role": "出资方",
+     "unit": "UNKNOWN",
+     "ev": "UNKNOWN"
+    },
+    {
+     "role": "业主",
+     "unit": "UNKNOWN（待核）",
+     "ev": "UNKNOWN"
+    },
+    {
+     "role": "可研单位",
+     "unit": "未披露",
+     "ev": "UNKNOWN"
+    },
+    {
+     "role": "设计",
+     "unit": "尚未进场（机会所在）",
+     "ev": "INFER"
+    }
+   ],
+   "materials": [
+    {
+     "name": "项目建议书批复（模拟公告）",
+     "type": "立项类",
+     "src": "L1 官方源（模拟）",
+     "date": "2026-09-05",
+     "ev": "FACT"
+    },
+    {
+     "name": "可研编制启动报道（模拟）",
+     "type": "其他",
+     "src": "L3 聚合来源（模拟）",
+     "date": "2026-11-01",
+     "ev": "INFER"
+    }
+   ],
+   "opps": [
+    {
+     "btype": "B1",
+     "bname": "设计",
+     "name": "管网更新工程设计（方案+初设）",
+     "dims": [
+      6,
+      9,
+      8,
+      0,
+      7
+     ],
+     "evs": [
+      "INFER",
+      "FACT",
+      "FACT",
+      "UNKNOWN",
+      "INFER"
+     ],
+     "weights": [
+      10,
+      25,
+      30,
+      20,
+      15
+     ],
+     "base": 63.0,
+     "losses": [
+      4.0,
+      2.5,
+      6.0,
+      20.0,
+      4.5
+     ],
+     "total_loss": 37.0,
+     "conf": 0.72,
+     "decision": "B",
+     "dec_why": "模拟阈值：55—70",
+     "condition": "先核实业主主体与资金来源，核实前不投入正式方案人力",
+     "actions": [
+      "核实业主主体（查可研批复原文）",
+      "核实资金来源",
+      "准备老旧管网改造业绩包"
+     ],
+     "press": [
+      "进入可能性维度 UNKNOWN：0分、k=0、计入Loss 20.0",
+      "业主与资金双缺口"
+     ],
+     "scope": "",
+     "window": "",
+     "entry": "可研阶段提前介入：以技术咨询/方案比选支持换取设计入口",
+     "tg": "业主筹备组（岗位类型：项目前期负责人）",
+     "path": "先核实主体→以同类管网业绩做技术交流→争取可研/初设委托",
+     "conflict": ""
+    },
+    {
+     "btype": "B2",
+     "bname": "勘察",
+     "name": "管网更新工程勘察（管线探测+地勘）",
+     "dims": [
+      5,
+      8,
+      7,
+      0,
+      6
+     ],
+     "evs": [
+      "INFER",
+      "FACT",
+      "FACT",
+      "UNKNOWN",
+      "INFER"
+     ],
+     "weights": [
+      10,
+      20,
+      30,
+      20,
+      20
+     ],
+     "base": 54.0,
+     "losses": [
+      5.0,
+      4.0,
+      9.0,
+      20.0,
+      8.0
+     ],
+     "total_loss": 46.0,
+     "conf": 0.71,
+     "decision": "C",
+     "dec_why": "模拟阈值：35—55",
+     "condition": "",
+     "actions": [
+      "核实业主主体后评估勘察窗口",
+      "准备管线探测业绩资料"
+     ],
+     "press": [
+      "进入可能性 UNKNOWN，计入Loss 20.0",
+      "分数处于观察区间"
+     ],
+     "scope": "",
+     "window": "",
+     "entry": "与B1设计捆绑：勘察先行成果可为设计投标加分",
+     "tg": "业主筹备组（岗位类型：前期工作负责人）",
+     "path": "随设计线同步核实，主体明确后再单独定级",
+     "conflict": ""
+    }
+   ],
+   "review_trigger": "可研批复发布或业主主体确认时复核"
+  },
+  {
+   "id": "DEMO-002",
+   "name": "城市道路及配套基础设施项目（DEMO-002·模拟）",
+   "short": "道路EPC",
+   "stage": 5,
+   "stage_name": "S5 招标采购",
+   "loc": "明州市新区（模拟）",
+   "owner": "明州市交通建设投资集团有限公司（模拟）",
+   "owner_ev": "FACT",
+   "amount": "总投资 18.6 亿元（模拟·估算口径）",
+   "content": "城市道路、桥梁及配套管线、交通设施（模拟）",
+   "funding": "财政+专项债，已公示（模拟）",
+   "events": [
+    {
+     "t": "2026-08-20",
+     "e": "初设批复（模拟事件）",
+     "s": "S3"
+    },
+    {
+     "t": "2026-11-08",
+     "e": "施工/EPC招标公告发布（模拟事件）",
+     "s": "S5 内部事件：招标公告"
+    }
+   ],
+   "gates": {
+    "G1": "未触发",
+    "G2": "B3机会待核（资质档案不完整≠无资质）",
+    "G3": "未触发（窗口开放）",
+    "G4": "未触发"
+   },
+   "veto": [],
+   "verify": [
+    {
+     "item": "联合体规则与业绩门槛原文",
+     "impact": "影响决策",
+     "method": "下载招标文件资格章节逐条核对"
+    },
+    {
+     "item": "标段划分（几个标段/各标段范围）",
+     "impact": "影响评分",
+     "method": "查招标公告标段表"
+    },
+    {
+     "item": "我方EPC资质路径四要件",
+     "impact": "影响决策",
+     "method": "按G2四要件逐项举证"
+    }
+   ],
+   "chain": [
+    {
+     "role": "出资方",
+     "unit": "明州市财政（模拟）",
+     "ev": "FACT"
+    },
+    {
+     "role": "业主",
+     "unit": "明州市交通建设投资集团（模拟）",
+     "ev": "FACT"
+    },
+    {
+     "role": "设计",
+     "unit": "初设单位已公示（模拟）",
+     "ev": "FACT"
+    },
+    {
+     "role": "EPC/施工",
+     "unit": "招标中（模拟）",
+     "ev": "FACT"
+    }
+   ],
+   "materials": [
+    {
+     "name": "初设批复（模拟）",
+     "type": "初设批复",
+     "src": "L1 官方源（模拟）",
+     "date": "2026-08-20",
+     "ev": "FACT"
+    },
+    {
+     "name": "招标公告（模拟）",
+     "type": "招标公告",
+     "src": "L1 公共资源交易（模拟）",
+     "date": "2026-11-08",
+     "ev": "FACT"
+    }
+   ],
+   "opps": [
+    {
+     "btype": "B3",
+     "bname": "EPC",
+     "name": "道路及配套 EPC 总承包",
+     "dims": [
+      8,
+      7,
+      5,
+      4,
+      8
+     ],
+     "evs": [
+      "FACT",
+      "FACT",
+      "INFER",
+      "INFER",
+      "FACT"
+     ],
+     "weights": [
+      15,
+      25,
+      25,
+      25,
+      10
+     ],
+     "base": 60.0,
+     "losses": [
+      3.0,
+      7.5,
+      12.5,
+      15.0,
+      2.0
+     ],
+     "total_loss": 40.0,
+     "conf": 0.85,
+     "decision": "B",
+     "dec_why": "模拟阈值：55—70",
+     "condition": "G2资质路径待核：补齐四要件（合法依据/合作方资质/可验证路径/招标文件不禁止）后再定级投入",
+     "actions": [
+      "逐条核对招标文件资格与联合体条款",
+      "落实设计院联合体搭档意向",
+      "补齐我方EPC业绩档案"
+     ],
+     "press": [
+      "业务匹配度靠推断（EPC业绩待补）",
+      "进入可能性靠推断"
+     ],
+     "scope": "",
+     "window": "",
+     "entry": "以联合体方式切入：我方施工+设计院搭档补齐EPC资质链",
+     "tg": "业主（岗位类型：招标管理负责人）/ 设计联合体（岗位类型：经营副院长）",
+     "path": "核实联合体规则→锁定设计搭档→四要件齐备后投标",
+     "conflict": ""
+    },
+    {
+     "btype": "B4",
+     "bname": "施工",
+     "name": "道路工程施工总承包",
+     "dims": [
+      8,
+      8,
+      7,
+      5,
+      9
+     ],
+     "evs": [
+      "FACT",
+      "FACT",
+      "FACT",
+      "INFER",
+      "FACT"
+     ],
+     "weights": [
+      20,
+      20,
+      20,
+      25,
+      15
+     ],
+     "base": 72.0,
+     "losses": [
+      4.0,
+      4.0,
+      6.0,
+      12.5,
+      1.5
+     ],
+     "total_loss": 28.0,
+     "conf": 0.93,
+     "decision": "A",
+     "dec_why": "模拟阈值：≥70 且置信度≥0.60（A级置信下限为已确认约束）",
+     "condition": "",
+     "actions": [
+      "组建投标团队并锁定标段",
+      "完成现场踏勘",
+      "联合体/分包资源摸排"
+     ],
+     "press": [
+      "进入可能性为推断级"
+     ],
+     "scope": "",
+     "window": "",
+     "entry": "直接投标：业绩与资质完整，拼履约与报价",
+     "tg": "业主（岗位类型：招标管理负责人）",
+     "path": "踏勘→标前答疑→组建投标团队",
+     "conflict": ""
+    },
+    {
+     "btype": "B5",
+     "bname": "分包/设备",
+     "name": "交通设施与管线材料供货/分包",
+     "dims": [
+      6,
+      6,
+      8,
+      5,
+      7
+     ],
+     "evs": [
+      "INFER",
+      "FACT",
+      "FACT",
+      "INFER",
+      "FACT"
+     ],
+     "weights": [
+      15,
+      15,
+      30,
+      25,
+      15
+     ],
+     "base": 65.0,
+     "losses": [
+      6.0,
+      6.0,
+      6.0,
+      12.5,
+      4.5
+     ],
+     "total_loss": 35.0,
+     "conf": 0.88,
+     "decision": "B",
+     "dec_why": "模拟阈值：55—70",
+     "condition": "标段划分核实后确认可及规模再投入",
+     "actions": [
+      "核实标段划分与材料清单",
+      "准备品牌进图资料"
+     ],
+     "press": [
+      "可及规模基于总投资推断（INFER）"
+     ],
+     "scope": "",
+     "window": "",
+     "entry": "向总包供货/分包：交通设施与管线材料包",
+     "tg": "未来中标总包（岗位类型：物资设备部长）",
+     "path": "标段划分核实→品牌进图→定标后对接总包",
+     "conflict": "可及规模冲突待核：按总投资比例推断约1.9亿 vs 按同类项目材料占比经验约1.2亿，两来源不一致，暂按推断级处理，不擅自选边"
+    }
+   ],
+   "review_trigger": "投标截止或标段划分澄清公告时复核"
+  },
+  {
+   "id": "DEMO-003",
+   "name": "公共服务中心及配套设施项目（DEMO-003·模拟）",
+   "short": "公共建筑",
+   "stage": 5,
+   "stage_name": "S5 招标采购",
+   "loc": "青禾区（模拟）",
+   "owner": "青禾区公共建设中心（模拟）",
+   "owner_ev": "FACT",
+   "amount": "总投资 4.2 亿元（模拟·概算口径）",
+   "content": "公共服务中心及配套设施（模拟）",
+   "funding": "区财政，已落实（模拟）",
+   "events": [
+    {
+     "t": "2026-07-15",
+     "e": "设计中标结果公示（模拟事件）",
+     "s": "设计范围 SCOPE_LOCKED"
+    },
+    {
+     "t": "2026-11-05",
+     "e": "施工招标公告发布（模拟事件）",
+     "s": "S5 内部事件：招标公告"
+    }
+   ],
+   "gates": {
+    "G1": "未触发",
+    "G2": "未触发",
+    "G3": "分机会判定：B1未触发（WINDOW_UNKNOWN）；B2已触发（LOCKED+CLOSED）",
+    "G4": "未触发"
+   },
+   "veto": [],
+   "verify": [
+    {
+     "item": "专项设计/设计深化是否另行发包（B1窗口）",
+     "impact": "影响决策",
+     "method": "向业主设计管理岗核实/查后续公告"
+    },
+    {
+     "item": "专业分包窗口与总包分包策划",
+     "impact": "影响评分",
+     "method": "定标后向总包核实"
+    }
+   ],
+   "chain": [
+    {
+     "role": "业主",
+     "unit": "青禾区公共建设中心（模拟）",
+     "ev": "FACT"
+    },
+    {
+     "role": "设计",
+     "unit": "已中标锁定（模拟）",
+     "ev": "FACT"
+    },
+    {
+     "role": "施工",
+     "unit": "招标中（模拟）",
+     "ev": "FACT"
+    },
+    {
+     "role": "专业分包",
+     "unit": "尚未披露（切入点）",
+     "ev": "UNKNOWN"
+    }
+   ],
+   "materials": [
+    {
+     "name": "设计中标结果公示（模拟）",
+     "type": "结果公示",
+     "src": "L1 公共资源交易（模拟）",
+     "date": "2026-07-15",
+     "ev": "FACT"
+    },
+    {
+     "name": "施工招标公告（模拟）",
+     "type": "招标公告",
+     "src": "L1 公共资源交易（模拟）",
+     "date": "2026-11-05",
+     "ev": "FACT"
+    }
+   ],
+   "opps": [
+    {
+     "btype": "B1",
+     "bname": "设计",
+     "name": "公共建筑设计（主设计）",
+     "dims": [
+      5,
+      3,
+      7,
+      2,
+      3
+     ],
+     "evs": [
+      "FACT",
+      "FACT",
+      "FACT",
+      "INFER",
+      "INFER"
+     ],
+     "weights": [
+      10,
+      25,
+      30,
+      20,
+      15
+     ],
+     "base": 42.0,
+     "losses": [
+      5.0,
+      17.5,
+      9.0,
+      16.0,
+      10.5
+     ],
+     "total_loss": 58.0,
+     "conf": 0.9,
+     "decision": "C",
+     "dec_why": "模拟阈值：35—55",
+     "condition": "",
+     "actions": [
+      "核实专项设计/深化是否另行发包",
+      "若另行发包则按专项设计重新评分"
+     ],
+     "press": [
+      "主设计窗口已过（阶段成熟度低）",
+      "注意：窗口UNKNOWN，G3未触发，不评D"
+     ],
+     "scope": "SCOPE_LOCKED",
+     "window": "WINDOW_UNKNOWN",
+     "entry": "专项设计/设计深化可能另行发包，是唯一剩余切口",
+     "tg": "业主（岗位类型：设计管理负责人）",
+     "path": "先核实是否另行发包→有则按专项设计重新建商机评分",
+     "conflict": ""
+    },
+    {
+     "btype": "B2",
+     "bname": "勘察",
+     "name": "公共建筑勘察（补勘/专项）",
+     "dims": [
+      4,
+      2,
+      6,
+      1,
+      2
+     ],
+     "evs": [
+      "FACT",
+      "FACT",
+      "FACT",
+      "INFER",
+      "INFER"
+     ],
+     "weights": [
+      10,
+      20,
+      30,
+      20,
+      20
+     ],
+     "base": 32.0,
+     "losses": [
+      6.0,
+      16.0,
+      12.0,
+      18.0,
+      16.0
+     ],
+     "total_loss": 68.0,
+     "conf": 0.88,
+     "decision": "D",
+     "dec_why": "G3触发：SCOPE_LOCKED + WINDOW_CLOSED",
+     "condition": "",
+     "actions": [
+      "本机会关闭，记录关闭原因",
+      "转向B4/B5机会"
+     ],
+     "press": [
+      "G3触发：范围锁定且窗口关闭"
+     ],
+     "scope": "SCOPE_LOCKED",
+     "window": "WINDOW_CLOSED",
+     "entry": "无（窗口已关闭）",
+     "tg": "—",
+     "path": "关闭并记录，转B4/B5",
+     "conflict": ""
+    },
+    {
+     "btype": "B4",
+     "bname": "施工",
+     "name": "公共服务中心工程施工总承包",
+     "dims": [
+      7,
+      9,
+      8,
+      6,
+      9
+     ],
+     "evs": [
+      "FACT",
+      "FACT",
+      "FACT",
+      "INFER",
+      "FACT"
+     ],
+     "weights": [
+      20,
+      20,
+      20,
+      25,
+      15
+     ],
+     "base": 76.5,
+     "losses": [
+      6.0,
+      2.0,
+      4.0,
+      10.0,
+      1.5
+     ],
+     "total_loss": 23.5,
+     "conf": 0.93,
+     "decision": "A",
+     "dec_why": "模拟阈值：≥70 且置信度≥0.60（A级置信下限为已确认约束）",
+     "condition": "",
+     "actions": [
+      "组建投标团队",
+      "完成业绩门槛自查",
+      "标前答疑前提问清单"
+     ],
+     "press": [
+      "进入可能性为推断级"
+     ],
+     "scope": "",
+     "window": "",
+     "entry": "直接投标：公共建筑施工业绩对口",
+     "tg": "业主（岗位类型：工程建设负责人）",
+     "path": "业绩自查→投标团队→标前提问",
+     "conflict": ""
+    },
+    {
+     "btype": "B5",
+     "bname": "分包/设备",
+     "name": "公共建筑专业分包（幕墙/机电/智能化）",
+     "dims": [
+      6,
+      7,
+      8,
+      5,
+      6
+     ],
+     "evs": [
+      "INFER",
+      "FACT",
+      "FACT",
+      "INFER",
+      "INFER"
+     ],
+     "weights": [
+      15,
+      15,
+      30,
+      25,
+      15
+     ],
+     "base": 65.0,
+     "losses": [
+      6.0,
+      4.5,
+      6.0,
+      12.5,
+      6.0
+     ],
+     "total_loss": 35.0,
+     "conf": 0.83,
+     "decision": "B",
+     "dec_why": "模拟阈值：55—70",
+     "condition": "核实专业分包窗口后升级投入",
+     "actions": [
+      "核实分包窗口",
+      "准备专项业绩与工艺包"
+     ],
+     "press": [
+      "可及规模与紧迫度靠推断"
+     ],
+     "scope": "",
+     "window": "",
+     "entry": "幕墙/机电/智能化专业分包，定标后向总包切入",
+     "tg": "未来中标总包（岗位类型：分包管理负责人）",
+     "path": "核实分包窗口→准备专项业绩→定标后对接",
+     "conflict": ""
+    }
+   ],
+   "review_trigger": "施工定标结果公告或专项设计发包公告时复核"
+  }
+ ],
+ "profile": {
+  "name": "华澜工程集团有限公司（模拟企业画像）",
+  "version": 3,
+  "completeness": 82,
+  "lines": [
+   {
+    "btype": "B1",
+    "item": "工程设计综合甲级（模拟）",
+    "status": "完整"
+   },
+   {
+    "btype": "B2",
+    "item": "工程勘察乙级（模拟）",
+    "status": "完整"
+   },
+   {
+    "btype": "B3",
+    "item": "EPC业绩档案（模拟）",
+    "status": "待补：业绩清单未齐（G2待核）"
+   },
+   {
+    "btype": "B4",
+    "item": "建筑/市政施工总承包一级（模拟）",
+    "status": "完整"
+   },
+   {
+    "btype": "B5",
+    "item": "专业分包业绩 6 项（模拟）",
+    "status": "完整"
+   }
+  ]
+ },
+ "weights": {
+  "B1": [
+   10,
+   25,
+   30,
+   20,
+   15
+  ],
+  "B2": [
+   10,
+   20,
+   30,
+   20,
+   20
+  ],
+  "B3": [
+   15,
+   25,
+   25,
+   25,
+   10
+  ],
+  "B4": [
+   20,
+   20,
+   20,
+   25,
+   15
+  ],
+  "B5": [
+   15,
+   15,
+   30,
+   25,
+   15
+  ]
+ },
+ "btype": {
+  "B1": "设计",
+  "B2": "勘察",
+  "B3": "EPC",
+  "B4": "施工",
+  "B5": "分包/设备"
+ },
+ "dims": [
+  "项目规模",
+  "阶段成熟度",
+  "业务匹配度",
+  "进入可能性",
+  "时间紧迫度"
+ ],
+ "rules": [
+  {
+   "name": "五维权重表（B1—B5）",
+   "ver": "P008-07 V0.2.4",
+   "status": "基线（继承）",
+   "note": "权重与交接包第6节一致；未经回测验证最优性"
+  },
+  {
+   "name": "BaseScore / Loss 公式",
+   "ver": "P008-07 V0.2.4",
+   "status": "已确认",
+   "note": "BaseScore+TotalLoss=100，可复算"
+  },
+  {
+   "name": "证据系数 FACT/INFER/ASSUME/UNKNOWN",
+   "ver": "P008-07 V0.2.4",
+   "status": "已确认",
+   "note": "UNKNOWN：0分、k=0、保留、计入Loss"
+  },
+  {
+   "name": "置信度 w_i^dec 定义",
+   "ver": "待核",
+   "status": "待批准",
+   "note": "本原型以业务权重代入证据系数模拟计算，界面标注模拟"
+  },
+  {
+   "name": "A/B/C/D 等级阈值",
+   "ver": "待核（07与08口径冲突）",
+   "status": "待批准",
+   "note": "本原型阈值源自P008-03（70/55/35），标注模拟参数；已确认约束仅：置信度<0.60不得评A"
+  },
+  {
+   "name": "CR-001 参数 0.75",
+   "ver": "待核",
+   "status": "待批准",
+   "note": "0.60为待批准模拟参数，不得默认启用0.75"
+  },
+  {
+   "name": "风险扣分算法（上限15）",
+   "ver": "待定",
+   "status": "待批准",
+   "note": "本原型演示项目未使用风险扣分，避免与五维重复扣分"
+  },
+  {
+   "name": "G1「长期」标准 / G4关联范围",
+   "ver": "待地区规则库",
+   "status": "待批准",
+   "note": "未定义时不自动触发"
+  },
+  {
+   "name": "ICR_CORE 五项",
+   "ver": "P008-07",
+   "status": "已确认（核心）",
+   "note": "business_type/stage_code/invest_amount或scope_split/content_desc/owner_type"
+  },
+  {
+   "name": "ICR 最小字段全集",
+   "ver": "未冻结",
+   "status": "待批准",
+   "note": "候选10项不得当正式口径"
+  },
+  {
+   "name": "阶段字典 S0—S8",
+   "ver": "冲突待裁决",
+   "status": "待批准",
+   "note": "交接包版与Muse冻结版（S4招标前/S6候选人/S7定标）不一致，已登记差异D-01，待ChatGPT统一裁决；本版按交接包展示，S5内部事件单列以保留候选人≠定标的证据区分"
+  }
+ ]
+};
+const STAGES = ["S0 谋划储备","S1 项目建议书","S2 可行性研究","S3 初步设计","S4 施工图设计","S5 招标采购","S6 施工实施","S7 竣工验收","S8 运维/后评价"];
+let state = {view:"dash", proj:null, opp:0, track:{}, tasks:{}, feedback:[], merged:false,
+  repMode:"one", repProj:null, pfVersion:DATA.profile.version, b3fixed:false, oplog:[], extraActions:{}, snaps:[], winOv:{}, g2:{}};
+DATA.projects.forEach(p=>p.opps.forEach((o,i)=>{state.track[p.id+"|"+i]= o.decision==="A"||o.decision==="B"?"追击中":(o.decision==="C"?"观察中":"已放弃")}));
+const $=s=>document.querySelector(s);
+const DN = {A:"重点追击",B:"有条件追击",C:"观察跟踪",D:"放弃"};
+function evChip(e,txt){const cls={FACT:"eE",INFER:"eI",ASSUME:"eA",UNKNOWN:"eN"}[e]||"eN";
+  return `<span class="ev ${cls}" onclick="showEv('${(txt||'').replace(/'/g,"")}','${e}')">${e}</span>`}
+function dBadge(o){return `<span class="badge d${o.decision}">${o.decision} 级 · ${DN[o.decision]}</span>`}
+function showEv(field, grade){
+  $("#evTitle").textContent="证据查看："+field;
+  $("#evBody").innerHTML=`<p>${evChip(grade,field)} <span class="tag">核验状态：${grade==='UNKNOWN'?'VERIFIED_MISSING（已确认缺失）':'UNVERIFIED（演示）'}</span></p>
+  <p class="small">证据定位（演示占位）：来源文件《模拟公告/批复》· 第 3 页 · 第 2 段 ——「……${field}……」</p>
+  <p class="small mut">正式版此处打开原始文件并定位页码/段落；推断与假设不得作为事实引用。</p>`;
+  $("#evModal").classList.add("open");
+}
+function closeModal(){$("#evModal").classList.remove("open")}
+function go(v,p,o){state.view=v;if(p!==undefined)state.proj=p;if(o!==undefined)state.opp=o;
+  document.querySelectorAll("nav a").forEach(a=>a.classList.toggle("on",a.dataset.v===v||((v==="project"||v==="opp")&&a.dataset.v==="radar")));render();window.scrollTo(0,0)}
+document.querySelectorAll("nav a").forEach(a=>a.onclick=()=>go(a.dataset.v));
+function allOpps(){let r=[];DATA.projects.forEach(p=>p.opps.forEach((o,i)=>r.push({p,o,i})));return r}
+function stageAxis(cur){let h='<div class="axis">';
+  STAGES.forEach((s,i)=>{h+=`<div class="stg ${i<cur?"done":i===cur?"cur":""}">${s}</div>`});return h+"</div>"}
+function projCard(p){const best=p.opps.slice().sort((x,y)=>y.base-x.base)[0];
+  return `<div class="card clickable" onclick="go('project','${p.id}')">
+  <div style="display:flex;justify-content:space-between;gap:8px"><b>${p.name}</b>${dBadge(best)}</div>
+  <div class="small mut" style="margin:6px 0">${p.loc} · ${p.amount} · 当前 ${p.stage_name}</div>${stageAxis(p.stage)}
+  <div class="small">最佳商机（对我方）：<b>${best.base} 分</b>（${best.btype} ${best.bname}，模拟阈值）｜ 商机数 ${p.opps.length} ｜ 待核实 ${p.verify.length} 项</div></div>`}
+function render(){const v=state.view,m=$("#main");
+  if(v==="dash")return renderDash(m); if(v==="radar")return renderRadar(m);
+  if(v==="evidence")return renderEvidence(m); if(v==="merge")return renderMerge(m);
+  if(v==="profile")return renderProfile(m); if(v==="reports")return renderReports(m);
+  if(v==="rules")return renderRules(m); if(v==="feedback")return renderFeedback(m);
+  if(v==="track")return renderTrack(m); if(v==="project")return renderProject(m);
+  if(v==="opp")return renderOpp(m);}
+function renderDash(m){const os=allOpps();
+  m.innerHTML=`<h1>P01 经营驾驶舱</h1><div class="sub">统一演示样本 DEMO-001~003（交接包基准）。先看门槛与待核实，再看分数。</div>
+  <div class="cards">
+    <div class="card kpi"><b>${DATA.projects.length}</b><span>演示项目</span></div>
+    <div class="card kpi"><b>${os.filter(x=>x.o.decision==="A").length}</b><span>A级商机（模拟阈值）</span></div>
+    <div class="card kpi"><b>${os.filter(x=>x.o.decision==="A"||x.o.decision==="B").length}</b><span>A/B级商机</span></div>
+    <div class="card kpi"><b>${DATA.projects.reduce((s,p)=>s+p.verify.length,0)}</b><span>待核实事项</span></div>
+    <div class="card kpi"><b>1</b><span>G3已触发机会（DEMO-003 B2）</span></div>
+  </div>
+  <h2>需要你先处理</h2>
+  <div class="danger"><b>G3 已触发：</b>DEMO-003 勘察机会——范围 SCOPE_LOCKED 且窗口 WINDOW_CLOSED，评为 D 级。注意同项目 B1 设计因窗口 UNKNOWN <b>未</b>触发 G3（评 C），这正是交接包的硬测点。<button class="btn small" style="margin-left:8px" onclick="go('project','DEMO-003')">查看项目</button></div>
+  <div class="warn"><b>UNKNOWN 保护：</b>DEMO-001 业主主体与资金来源未提供，系统未自动生成；其 B1/B2 的进入可能性维度按 UNKNOWN 处理（0分、计入 Loss）。<button class="btn small ghost" style="margin-left:8px" onclick="go('project','DEMO-001')">查看</button></div>
+  <div class="info"><b>画像待补：</b>企业画像 B3 业绩档案未齐，DEMO-002 的 EPC 机会 G2 为「待核」——档案缺失 ≠ 无资质。<button class="btn small ghost" style="margin-left:8px" onclick="go('profile')">去完善画像</button></div>
+  <h2>重点项目</h2><div style="display:grid;gap:12px">${DATA.projects.map(projCard).join("")}</div>`}
+function renderRadar(m){
+  m.innerHTML=`<h1>P02 项目雷达</h1><div class="sub">按阶段/业务/等级筛选；筛选可清除。项目评分与商机评分分离（本版项目侧只展示阶段与事实，不另造项目分）。</div>
+  <div class="frow"><label>筛选</label>
+  <select id="fS" onchange="radarFilter()"><option value="">全部阶段</option><option value="2">S2 可行性研究</option><option value="5">S5 招标采购</option></select>
+  <select id="fB" onchange="radarFilter()"><option value="">全部业务</option><option>B1</option><option>B2</option><option>B3</option><option>B4</option><option>B5</option></select>
+  <select id="fD" onchange="radarFilter()"><option value="">全部等级</option><option>A</option><option>B</option><option>C</option><option>D</option></select>
+  <button class="btn small ghost" onclick="go('radar')">清除筛选</button></div>
+  <div id="radarList" style="display:grid;gap:12px">${DATA.projects.map(projCard).join("")}</div>`}
+function radarFilter(){const s=$("#fS").value,b=$("#fB").value,d=$("#fD").value;
+  const list=DATA.projects.filter(p=>(!s||p.stage===+s)&&(!b||p.opps.some(o=>o.btype===b))&&(!d||p.opps.some(o=>o.decision===d)));
+  $("#radarList").innerHTML=list.map(projCard).join("")||'<div class="card">没有符合条件的项目（模拟数据）。</div>'}
+function evRows(){let rows=[];
+  DATA.projects.forEach(p=>{
+    rows.push([p,"业主/建设单位",p.owner,p.owner_ev]);
+    rows.push([p,"资金来源",p.funding,p.funding.includes("UNKNOWN")?"UNKNOWN":"FACT"]);
+    p.materials.forEach(mt=>rows.push([p,"资料："+mt.name,mt.src+" · "+mt.date,mt.ev]));
+    p.verify.forEach(x=>rows.push([p,"待核实："+x.item,x.method,"UNKNOWN"]));});
+  return rows}
+function renderEvidence(m){
+  m.innerHTML=`<h1>P06 证据与资料中心</h1><div class="sub">点击任意证据标签定位原文（演示占位）。UNKNOWN 表示已确认缺失，不自动填充。</div>
+  <table><tr><th>项目</th><th>证据/字段</th><th>来源/定位</th><th>等级</th><th>核验状态</th></tr>
+  ${evRows().map(r=>`<tr><td class="small">${r[0].short}</td><td>${r[1]}</td><td class="small">${r[2]}</td><td>${evChip(r[3],r[1])}</td><td class="small">${r[3]==='UNKNOWN'?'VERIFIED_MISSING':'UNVERIFIED'}</td></tr>`).join("")}</table>
+  <div class="card" style="margin-top:14px"><b>新增资料（原型演示）</b><div class="small mut" style="margin:6px 0">支持公告文本、PDF、Word、Excel、图片、网页链接登记。原型仅登记，正式版走 M01采集→M02解析→M04证据管理。</div>
+  <input type="file" id="upF"> <button class="btn small" onclick="mockUpload()">登记资料</button> <span id="upMsg" class="small"></span></div>`}
+function mockUpload(){const f=$("#upF").files[0];$("#upMsg").textContent=f?("已登记（模拟）："+f.name):"请先选择文件。"}
+function renderMerge(m){
+  m.innerHTML=`<h1>项目识别与归并（M03）</h1><div class="sub">归并优先使用项目代码；缺失时多字段匹配，保留强匹配/疑似匹配/不匹配判断，人工终裁。</div>
+  ${state.merged?'<div class="info">已处理：该对项目已按你的选择记录，不再重复提示。</div>':`
+  <div class="card"><h3 style="margin-top:0">疑似同一项目，请确认</h3>
+  <table><tr><th></th><th>已有项目</th><th>新导入资料</th></tr>
+  <tr><td>名称</td><td>公共服务中心及配套设施项目</td><td>青禾区公共服务中心项目（招标公告）</td></tr>
+  <tr><td>项目代码</td><td>未含（模拟）</td><td>未含（模拟）</td></tr>
+  <tr><td>地点/业主</td><td>青禾区 / 青禾区公共建设中心</td><td>青禾区 / 青禾区公共建设中心</td></tr></table>
+  <p class="small">命中理由：地点✓ 业主✓ 建设内容相似✓（无项目代码，定为疑似匹配）</p>
+  <button class="btn" onclick="doMerge(true)">归并为同一项目</button> <button class="btn ghost" onclick="doMerge(false)">不是同一项目</button></div>`}
+  <h2>事件与更名记录</h2><div class="card small">流标、废标、终止、撤销、重新招标、变更公告均作为 ProjectEvent 记录，不覆盖旧状态（交接包第4节）。阶段变化按事件记录：DEMO-002 已记录 S3 初设批复 → S5 招标公告两条事件（见项目详情时间线）。</div>`}
+function doMerge(yes){state.merged=true;render();alert(yes?"已归并，名称历史与事件已保留。":"已标记不匹配，后续不再提示这一对。")}
+function renderProfile(m){const pf=DATA.profile;
+  m.innerHTML=`<h1>P07 企业画像</h1><div class="sub">画像可编辑；修改记录版本，且不覆盖已有评分快照（快照仍标旧版本）。</div>
+  <div class="card"><b>${pf.name}</b><div class="small mut" style="margin:6px 0">画像版本 V${state.pfVersion} · 完整度 ${state.b3fixed?90:pf.completeness}%</div>
+  <table style="margin-top:10px"><tr><th>业务线</th><th>能力/资质</th><th>状态</th><th>操作</th></tr>
+  ${pf.lines.map(l=>`<tr><td>${l.btype} ${DATA.btype[l.btype]}</td><td>${l.item}</td><td>${l.btype==="B3"?(state.b3fixed?"完整（本轮已补）":l.status):l.status}</td>
+  <td>${l.btype==="B3"&&!state.b3fixed?'<button class="btn small" onclick="fixB3()">补齐业绩档案（模拟）</button>':""}</td></tr>`).join("")}</table>
+  <p class="small mut">说明：补齐后，新评分将以画像 V${state.pfVersion+ (state.b3fixed?0:1)} 计算；已生成的 DEMO-002 B3 评分快照保留 V${DATA.profile.version} 与「G2待核」原判，不被覆盖（硬测：快照不可变）。</p></div>`}
+function fixB3(){state.b3fixed=true;state.pfVersion++;state.oplog.push("画像更新至 V"+state.pfVersion+"：补齐B3业绩档案（模拟操作）");render()}
+function renderRules(m){
+  m.innerHTML=`<h1>P10 规则管理</h1><div class="sub">基线、候选、待批准、生产启用分开显示。未批准参数不得伪装成生产规则。</div>
+  <table><tr><th>规则</th><th>版本/来源</th><th>状态</th><th>说明</th></tr>
+  ${DATA.rules.map(r=>`<tr><td>${r.name}</td><td>${r.ver}</td><td><span class="tag">${r.status}</span></td><td class="small">${r.note}</td></tr>`).join("")}</table>
+  <div class="warn"><b>阶段字典冲突（差异 D-01）：</b>交接包版 S4=施工图设计、S5=招标采购（含候选人/结果内部事件）、S6=施工实施；Muse 冻结版 S4=招标前公示、S6=候选人公示、S7=定标。本版按交接包展示并在 S5 内单列事件保留「候选人≠定标」，最终字典待 ChatGPT 统一裁决并与 P008-07 原文逐字核验。</div>`}
+function renderProject(m){const p=DATA.projects.find(x=>x.id===state.proj)||DATA.projects[0];state.proj=p.id;
+  m.innerHTML=`<button class="btn ghost small" onclick="go('radar')">← 返回雷达</button>
+  <h1>${p.name}</h1><div class="sub">${p.loc} · ${p.amount} · 资料版本与判断时间随复核更新</div>${stageAxis(p.stage)}
+  <p class="small mut">阶段口径：交接包字典（D-01 待裁决）。S5 内部事件（招标公告/候选人/结果）单独记录，候选人公示不等于定标。</p>
+  <div class="grid2"><div class="card"><h3 style="margin-top:0">基本信息与证据</h3>
+  <p>业主：${p.owner} ${evChip(p.owner_ev,"业主")}</p><p>资金：${p.funding}</p><p>建设内容：${p.content}</p>
+  <p class="small mut">金额只作背景：项目总投资 ≠ 我方可获得合同额；可及规模按业务拆分后估算并标等级。</p></div>
+  <div class="card"><h3 style="margin-top:0">G1—G4 风险门槛</h3>
+  ${Object.entries(p.gates).map(([g,v])=>`<p class="small"><b>${g}</b>：${v}</p>`).join("")}
+  <p class="small mut">每个触发结论必须有规则与证据；G2 档案缺失记待核；G3 仅 LOCKED+CLOSED 触发。</p></div></div>
+  <h2>项目事件时间线</h2><div class="card">${p.events.map(e=>`<p class="small" style="margin:4px 0"><span class="tag">${e.t}</span> ${e.e} <span class="mut">（${e.s}）</span></p>`).join("")}</div>
+  <h2>待核实清单（${p.verify.length}）</h2><div class="card">${p.verify.map(x=>`<p class="small" style="margin:5px 0"><span class="ev eN">UNKNOWN</span> ${x.item} <span class="tag">${x.impact}</span> <span class="mut">核实方式：${x.method}</span></p>`).join("")}</div>
+  <h2>参与主体链</h2><div class="card">${p.chain.map(c=>`<div class="chainrow"><span class="tag">${c.role}</span> ${c.unit} ${evChip(c.ev,c.role)}</div>`).join("")}
+  <p class="small mut">主体只到单位+岗位类型，不编造人名；潜在关系为推断须单独标注。</p></div>
+  <h2>商机清单（按 B1—B5 拆分，逐条评分）</h2><div style="display:grid;gap:10px">
+  ${p.opps.map((o,i)=>`<div class="card clickable" onclick="go('opp','${p.id}',${i})">
+    <div style="display:flex;justify-content:space-between;gap:8px"><b>${o.btype} · ${o.name}</b>${dBadge(o)}</div>
+    <div class="small" style="margin-top:6px">商机评分 <b>${o.base}</b>（BaseScore）｜ Loss ${o.total_loss} ｜ 置信度 ${o.conf} <span class="tag">模拟·w_dec待核</span>${o.scope?` ｜ 范围 ${o.scope} / 窗口 ${o.window}`:""}</div>
+    <div class="small mut">${o.dec_why}${o.condition?" ｜ 条件："+o.condition:""}</div></div>`).join("")}</div>`}
+function renderOpp(m){const p=DATA.projects.find(x=>x.id===state.proj)||DATA.projects[0];const o=p.opps[state.opp];
+  m.innerHTML=`<button class="btn ghost small" onclick="go('project','${p.id}')">← 返回项目</button>
+  <h1>${o.btype} · ${o.name}</h1><div class="sub">所属项目：${p.name} ｜ 规则版本 P008-07 V0.2.4（基线）｜ 画像 V${DATA.profile.version}（快照）</div>
+  <div class="card" style="display:flex;gap:18px;flex-wrap:wrap;align-items:center">
+    <div><div class="small mut">商机评分 BaseScore</div><div style="font-size:30px;font-weight:800">${o.base}</div></div>
+    <div><div class="small mut">总 Loss</div><div style="font-size:30px;font-weight:800">${o.total_loss}</div></div>
+    <div><div class="small mut">置信度（模拟）</div><div style="font-size:30px;font-weight:800">${o.conf}</div><div class="small mut">w_i^dec 未定义，本值以业务权重代入证据系数，仅作演示</div></div>
+    <div>${dBadge(o)}<div class="small mut" style="margin-top:6px">${o.dec_why}</div></div>
+  </div>
+  ${o.condition?`<div class="warn"><b>有条件追击——条件：</b>${o.condition}（未完成前不升级投入）</div>`:""}
+  <h2>切入点 / 目标 / 进入路径</h2><div class="card">
+  <p class="small" style="margin:4px 0"><b>切入点：</b>${o.entry||"未填写"}</p>
+  <p class="small" style="margin:4px 0"><b>目标单位/岗位类型：</b>${o.tg||"未填写"}（只到单位+岗位，不编造人名）</p>
+  <p class="small" style="margin:4px 0"><b>进入路径：</b>${o.path||"未填写"}</p>
+  ${o.conflict?`<p class="small" style="margin:6px 0"><span class="ev eA">冲突待核</span> ${o.conflict}</p>`:""}</div>
+  ${o.scope?`<h2>门槛实验室（借鉴Claude版交互）</h2><div class="card">
+  <p class="small">范围状态：<b>${o.scope}</b> ｜ 窗口状态（可切换演示）：<b id="labWin">${state.winOv[p.id+"|"+state.opp]||o.window}</b></p>
+  <button class="btn small" onclick="setWin('WINDOW_OPEN')">窗口 OPEN</button>
+  <button class="btn small ghost" onclick="setWin('WINDOW_UNKNOWN')">窗口 UNKNOWN</button>
+  <button class="btn small ghost" onclick="setWin('WINDOW_CLOSED')">窗口 CLOSED</button>
+  <p class="small" style="margin-top:8px">当前判定：<b id="labDec">${labText(p,o)}</b></p>
+  <p class="small mut">规则：仅 SCOPE_LOCKED + WINDOW_CLOSED 触发 G3 评 D；UNKNOWN 不等于关闭。切换只改演示状态，不改存档数据。</p></div>`:""}
+  ${p.id==="DEMO-002"&&o.btype==="B3"?`<h2>G2 有效路径四要件（可勾选演示）</h2><div class="card">
+  ${["合法依据","合作方资质","可验证合作路径","招标文件不禁止"].map((x,i)=>`<label style="display:block;margin:6px 0"><input type="checkbox" ${state.g2[i]?"checked":""} onchange="state.g2[${i}]=this.checked;render()"> ${x}</label>`).join("")}
+  <p class="small" style="margin-top:6px">G2 状态：<b>${[0,1,2,3].every(i=>state.g2[i])?"路径成立（演示）——待核可解除":"待核（四要件未齐）"}</b>。档案缺失≠无资质；四要件齐备才算有效路径。</p></div>`:""}
+  <h2>五维评分展开（点击行看证据；UNKNOWN 维度保留、0分、计入Loss）</h2><div class="card">
+  ${DATA.dims.map((dn,i)=>{const unk=o.evs[i]==="UNKNOWN";
+    return `<div class="dimrow" onclick="showEv('${p.short} · ${dn}','${o.evs[i]}')">
+    <span style="width:92px">${dn}</span>
+    <span class="bar"><i style="width:${o.dims[i]*10}%"></i></span>
+    <span style="width:110px">${unk?"UNKNOWN · 0 分":o.dims[i]+" / 10"} · 权重 ${o.weights[i]}%</span>
+    <span style="width:120px" class="small mut">Loss ${o.losses[i]}</span>${evChip(o.evs[i],dn)}</div>`}).join("")}
+  <p class="small mut">公式：BaseScore = Σ((w_i/100)×dim_i)×10；Loss_i = (w_i/100)×(10-dim_i)×10；BaseScore + TotalLoss = 100，可复算。风险扣分（上限15）本演示未使用，避免与五维重复扣分（算法待定）。</p></div>
+  <h2>证据压力点</h2><div class="card">${o.press.map(x=>`<p class="small" style="margin:4px 0">· ${x}</p>`).join("")}</div>
+  <h2>行动任务（可勾选，会话内生效）</h2><div class="card">
+  ${o.actions.map((a,i)=>{const k=p.id+"|"+state.opp+"|"+i;return `<label style="display:block;margin:7px 0"><input type="checkbox" ${state.tasks[k]?"checked":""} onchange="toggleTask('${k}')"> ${a}</label>`}).join("")}
+  ${(state.extraActions[p.id+"|"+state.opp]||[]).map(a=>`<p class="small" style="margin:7px 0">＋ ${a.t}（责任人 ${a.who} · 期限 ${a.due}）</p>`).join("")}
+  </div>
+  <h2>条目反馈</h2><div class="card"><button class="btn small" onclick="quickFb('条目评价：有用','${p.short} ${o.btype}')">有用</button>
+  <button class="btn small ghost" onclick="quickFb('条目评价：不准确','${p.short} ${o.btype}')">不准确</button>
+  <span class="small mut"> 结果回填（中标/未中标/放弃原因）是权重校准的唯一真实数据源，不自动修改基线权重。</span></div>`}
+function labText(p,o){const w=state.winOv[p.id+"|"+state.opp]||o.window;
+  if(o.scope==="SCOPE_LOCKED"&&w==="WINDOW_CLOSED")return "D 级 · 放弃（G3触发：LOCKED+CLOSED）";
+  if(o.decision==="D"&&o.scope==="SCOPE_LOCKED")return "按分数重算："+o.base+" 分 → "+(o.base>=70?"A":o.base>=55?"B":o.base>=35?"C":"D")+" 级（G3未触发，模拟阈值）";
+  return o.decision+" 级 · "+DN[o.decision]+"（G3未触发）"}
+function setWin(w){const p=DATA.projects.find(x=>x.id===state.proj);const o=p.opps[state.opp];
+  state.winOv[p.id+"|"+state.opp]=w;$("#labWin").textContent=w;$("#labDec").textContent=labText(p,o)}
+function toggleTask(k){state.tasks[k]=!state.tasks[k]}
+function renderTrack(m){const rows=allOpps();
+  m.innerHTML=`<h1>P08 商机跟踪</h1><div class="sub">系统决策与人工状态分开；新增行动与状态变更写入操作记录。复核触发：${DATA.projects.map(p=>p.review_trigger).join("；")}</div>
+  <table><tr><th>项目</th><th>商机</th><th>系统决策</th><th>人工状态</th><th>新增行动（责任人/期限）</th></tr>
+  ${rows.map(({p,o,i})=>{const k=p.id+"|"+i;return `<tr><td class="small">${p.short}</td><td>${o.btype} ${o.name}</td><td>${dBadge(o)}</td>
+  <td><select onchange="setTrack('${k}',this.value)">${["追击中","观察中","已放弃","已关闭"].map(s=>`<option ${state.track[k]===s?"selected":""}>${s}</option>`).join("")}</select></td>
+  <td><input id="na_${k.replace('|','_')}" placeholder="行动内容" style="width:130px"> <input id="nw_${k.replace('|','_')}" placeholder="责任人" style="width:64px"> <input id="nd_${k.replace('|','_')}" type="date" style="width:128px"> <button class="btn small" onclick="addAction('${k}')">新增</button></td></tr>`}).join("")}</table>
+  <h2>操作记录</h2><div class="card small" id="oplog">${state.oplog.length?state.oplog.map(x=>`<p style="margin:4px 0">· ${x}</p>`).join(""):'<span class="mut">暂无操作记录。在上方新增行动、修改状态或补齐画像后，这里会留痕（会话内）。</span>'}</div>`}
+function setTrack(k,v){state.track[k]=v;state.oplog.push("状态变更："+k.replace("|"," · ")+" → "+v);render()}
+function addAction(k){const id=k.replace("|","_");const t=$("#na_"+id).value.trim();if(!t)return alert("请填行动内容");
+  const who=$("#nw_"+id).value.trim()||"未指定",due=$("#nd_"+id).value||"未定期限";
+  (state.extraActions[k]=state.extraActions[k]||[]).push({t,who,due});
+  state.oplog.push("新增行动："+k.replace("|"," · ")+"｜"+t+"（"+who+" · "+due+"）");render()}
+function reportHtml(p,o,mode){const head=`<div style="text-align:center"><b style="font-size:18px">工程商机研判报告（模拟数据）</b><div class="small mut">P008-08 结构：一页摘要与完整报告同源同批次 · 评分快照：规则 V0.2.4 / 画像 V${DATA.profile.version} / 置信度与阈值为待批准模拟参数</div></div>`;
+  const core=`<p><b>项目：</b>${p.name}｜<b>阶段：</b>${p.stage_name}｜<b>商机：</b>${o.btype} ${o.name}</p>
+  <p><b>决策：</b>${o.decision} 级 ${DN[o.decision]}（${o.dec_why}）${o.condition?"｜<b>条件：</b>"+o.condition:""}</p>
+  <p><b>评分：</b>BaseScore ${o.base}｜Loss ${o.total_loss}｜置信度 ${o.conf}（模拟）</p>`;
+  if(mode==="one")return head+core+`<p><b>切入点与下一步：</b>${o.actions.join("；")}</p><p><b>主要待核实：</b>${p.verify.map(x=>x.item).join("；")}</p>`;
+  return head+core+`<h3>五维与证据</h3>${DATA.dims.map((dn,i)=>`<p class="small">${dn}：${o.dims[i]}分（权重${o.weights[i]}%，证据 ${o.evs[i]}，Loss ${o.losses[i]}）</p>`).join("")}
+  <h3>画像匹配</h3><p class="small">${DATA.profile.name} V${DATA.profile.version}；B3线状态：${state.b3fixed?"已补齐（新版）":"待补，G2待核（快照原判保留）"}</p>
+  <h3>门槛 G1—G4</h3>${Object.entries(p.gates).map(([g,v])=>`<p class="small">${g}：${v}</p>`).join("")}
+  <h3>待核实与复核触发</h3><p class="small">${p.verify.map(x=>x.item).join("；")}｜复核触发：${p.review_trigger}</p>
+  <h3>证据附录</h3><p class="small">${p.materials.map(mt=>mt.name+"（"+mt.ev+"）").join("；")}</p>
+  <p class="small mut">金额口径：项目总投资 ≠ 我方可获得合同额。本报告含模拟数据与待批准参数，不得作为生产决策依据。</p>`}
+function renderReports(m){const p=DATA.projects.find(x=>x.id===state.repProj)||DATA.projects[1];state.repProj=p.id;
+  m.innerHTML=`<h1>P09 报告中心</h1><div class="sub">一页摘要与完整报告同源生成；生成后修改画像或规则，旧快照与旧报告不被覆盖。</div>
+  <div class="frow"><label>项目</label><select onchange="state.repProj=this.value;render()">${DATA.projects.map(x=>`<option value="${x.id}" ${x.id===p.id?"selected":""}>${x.name}</option>`).join("")}</select>
+  <label>商机</label><select id="repOpp">${p.opps.map((o,i)=>`<option value="${i}">${o.btype} ${o.name}</option>`).join("")}</select>
+  <button class="btn" onclick="genReport()">生成报告</button>
+  <button class="btn ghost" onclick="state.repMode=state.repMode==='one'?'full':'one';genReport()">切换一页/完整</button>
+  <button class="btn ghost" onclick="window.print()">打印/导出 PDF</button></div>
+  <div class="card" id="repOut"><span class="mut">选择项目与商机后点击「生成报告」。</span></div>
+  <h2>快照历史（借鉴Claude版）</h2><div class="card" id="snapList">${state.snaps.length?state.snaps.map((s,i)=>`<p class="small" style="margin:5px 0"><span class="tag">${s.t}</span> ${s.name} · ${s.mode==="one"?"一页摘要":"完整报告"} · 画像V${s.pf} <button class="btn small ghost" onclick="viewSnap(${i})">查看</button></p>`).join(""):'<span class="mut">暂无快照。生成报告后点「保存为快照」，快照不会被后续画像/规则修改覆盖。</span>'}</div>`}
+function genReport(){const p=DATA.projects.find(x=>x.id===state.repProj);const o=p.opps[+($("#repOpp")?$("#repOpp").value:0)];
+  $("#repOut").innerHTML=reportHtml(p,o,state.repMode)+'<p style="margin-top:10px"><button class="btn small" onclick="saveSnap()">保存为快照</button></p>';
+  state.curSnap={name:p.short+" "+o.btype+" "+o.name, mode:state.repMode, html:reportHtml(p,o,state.repMode), pf:state.pfVersion}}
+function saveSnap(){if(!state.curSnap)return;state.snaps.push({t:new Date().toLocaleString(),...state.curSnap});render()}
+function viewSnap(i){$("#repOut").innerHTML=state.snaps[i].html+'<p class="small mut" style="margin-top:8px">（历史快照，生成于 '+state.snaps[i].t+'，不随当前数据变化）</p>'}
+function renderFeedback(m){
+  m.innerHTML=`<h1>人工反馈（M12 反馈回测）</h1><div class="sub">四级入口：字段纠错 / 条目评价 / 报告采纳 / 结果回填。回填只沉淀样本，不自动改权重。</div>
+  <div class="card"><div class="frow"><label>类型</label><select id="fbT"><option>字段纠错</option><option>条目评价</option><option>报告采纳</option><option>结果回填</option></select>
+  <label>对象</label><input id="fbO" placeholder="如 DEMO-002 B3" style="width:170px"></div>
+  <div class="frow"><label>内容</label><input id="fbC" placeholder="写下纠正内容或实际结果" style="flex:1"></div>
+  <button class="btn" onclick="submitFb()">提交反馈</button></div>
+  <h2>本会话反馈记录</h2><div class="card" id="fbList">${state.feedback.length?state.feedback.map(f=>`<p class="small" style="margin:5px 0"><span class="tag">${f.t}</span> ${f.o}：${f.c}</p>`).join(""):'<span class="mut">暂无记录。</span>'}</div>`}
+function submitFb(){const t=$("#fbT").value,o=$("#fbO").value.trim(),c=$("#fbC").value.trim();if(!c)return alert("请填写内容");
+  state.feedback.push({t,o:o||"（未指明）",c});render()}
+function quickFb(t,o){state.feedback.push({t,o,c:"来自商机详情页快捷评价"});alert("已记录："+t+" · "+o)}
+render();
+
+</script>
+</body>
+</html>
